@@ -1,0 +1,99 @@
+<html>
+	<head>
+		<meta charset="utf-8"></head>
+		<title>LABI Duck Hunt</title>
+		<style>
+			body{
+				padding: 0;
+				margin: 0;
+				font-family: Helvetica, sans;
+				overflow: hidden;
+			}
+			.header {
+				width: 100%;
+				text-align: center;
+				position: absolute;
+				color: white;
+				z-index: 1;
+			}
+			.bg{
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				z-index: 0;
+			}
+		</style>
+		<script>
+			var pato = null;
+			var temporizador = null;
+			var intervaloActualizacao = 10;
+			var incremento = 1; 
+			
+			var topo = 0; //Posição vertical
+			var topo_dir_num = 0; //Numero de passos da deslocação vertical
+			var topo_dir = 0; //Direção da deslocação vertical
+			var esquerda = 0; //Posição Horizontal
+			var num_tiros = 3;
+			var num_patos_falhados = 0;
+			var num_patos_atingidos = 0;
+			var num_patos_total = 0;
+
+			function mover(){
+				//Movimento vertical
+				if(topo_dir_num-- <= 0)
+				{
+					topo_dir = (Math.random()-0.5)*incremento;
+					topo_dir_num = Math.random()*300;
+				}
+
+				//Limite superior e inferior
+				if(topo <= 0 || (topo+64) >= window.innerHeight){
+					topo_dir *=-1;
+				}
+
+				topo += topo_dir;
+
+				//Incrementar posicao horizontal
+				esquerda += incremento;
+
+				//FIM?
+				if (esquerda >= window.innerWidth)
+				{
+					//Chegou ao fim
+					pato.style.display = "none";
+					clearInterval(temporizador);
+					setTimeout(novoPato,2000*Math.random());
+				}else{
+					//Ainda não
+					pato.style.left = esquerda+"px"; 
+					pato.style.top = topo + "px";
+				}
+
+			}
+
+			function novoPato(){
+				esquerda = -64;
+				topo = Math.random()*(window.innerHeight-200)+100;
+				topo_dir_count = 0;
+				pato.style.display = "block";
+				pato.style.left = esquerda+"px";
+				pato.style.top = topo+"px";
+				temporizador = setInterval(mover,intervaloActualizacao);	
+			}
+
+			function inicio(){
+				pato = document.getElementById("alvo");
+				novoPato();
+			}
+		</script>
+	</head>
+
+	<body onload="inicio()">
+		<audio 	autoplay><source src="intro.mp3" type="audio/mpeg" /></audio>
+		<div class="header">
+			<h1>LABI Duck Hunt</h1>
+		</div>
+		<img class="bg" src="background.png"></img>
+		<img id="alvo" src="duck.gif" style="z-index: 5; width:64px; height: 64px; position:absolute"></img>
+	</body>
+</html>
